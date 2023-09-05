@@ -1,7 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-namespace System.IO.Compression
+namespace SystemIOCompression
 {
     public enum ZipArchiveMode
     {
@@ -11,7 +11,7 @@ namespace System.IO.Compression
         /// If the underlying file or stream is not seekable, the entire archive will be held in memory.
         /// Requires that the underlying file or stream is readable.
         /// </summary>
-        Read,
+        //Read,
         /// <summary>
         /// Only supports the creation of new archives.
         /// Only writing to newly created entries in the archive is permitted.
@@ -26,6 +26,6 @@ namespace System.IO.Compression
         /// The underlying file or stream must be readable, writable and seekable.
         /// No data will be written to the underlying file or stream until the archive is disposed.
         /// </summary>
-        Update
+        //Update
     }
 }

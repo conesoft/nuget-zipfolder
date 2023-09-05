@@ -3,7 +3,7 @@
 
 using System.ComponentModel;
 
-namespace System.IO.Compression
+namespace SystemIOCompression
 {
     public static partial class ZipFileExtensions
     {
@@ -34,8 +34,8 @@ namespace System.IO.Compression
         /// <param name="destinationDirectoryName">The path to the directory on the file system.
         /// The directory specified must not exist. The path is permitted to specify relative or absolute path information.
         /// Relative path information is interpreted as relative to the current working directory.</param>
-        public static void ExtractToDirectory(this ZipArchive source, string destinationDirectoryName) =>
-            ExtractToDirectory(source, destinationDirectoryName, overwriteFiles: false);
+        //public static void ExtractToDirectory(this ZipArchive source, string destinationDirectoryName) =>
+        //    ExtractToDirectory(source, destinationDirectoryName, overwriteFiles: false);
 
         /// <summary>
         /// Extracts all of the files in the archive to a directory on the file system. The specified directory may already exist.
@@ -65,15 +65,15 @@ namespace System.IO.Compression
         /// The directory specified must not exist. The path is permitted to specify relative or absolute path information.
         /// Relative path information is interpreted as relative to the current working directory.</param>
         /// <param name="overwriteFiles">True to indicate overwrite.</param>
-        public static void ExtractToDirectory(this ZipArchive source, string destinationDirectoryName, bool overwriteFiles)
-        {
-            ArgumentNullException.ThrowIfNull(source);
-            ArgumentNullException.ThrowIfNull(destinationDirectoryName);
+        //public static void ExtractToDirectory(this ZipArchive source, string destinationDirectoryName, bool overwriteFiles)
+        //{
+        //    ArgumentNullException.ThrowIfNull(source);
+        //    ArgumentNullException.ThrowIfNull(destinationDirectoryName);
 
-            foreach (ZipArchiveEntry entry in source.Entries)
-            {
-                entry.ExtractRelativeToDirectory(destinationDirectoryName, overwriteFiles);
-            }
-        }
+        //    foreach (ZipArchiveEntry entry in source.Entries)
+        //    {
+        //        entry.ExtractRelativeToDirectory(destinationDirectoryName, overwriteFiles);
+        //    }
+        //}
     }
 }

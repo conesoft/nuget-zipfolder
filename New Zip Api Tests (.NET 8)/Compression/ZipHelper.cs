@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace System.IO.Compression
+namespace SystemIOCompression
 {
     internal static class ZipHelper
     {

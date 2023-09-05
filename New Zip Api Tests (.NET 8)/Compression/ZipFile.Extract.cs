@@ -3,7 +3,7 @@
 
 using System.Text;
 
-namespace System.IO.Compression
+namespace SystemIOCompression
 {
     public static partial class ZipFile
     {
@@ -36,8 +36,8 @@ namespace System.IO.Compression
         ///
         /// <param name="sourceArchiveFileName">The path to the archive on the file system that is to be extracted.</param>
         /// <param name="destinationDirectoryName">The path to the directory on the file system. The directory specified must not exist, but the directory that it is contained in must exist.</param>
-        public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName) =>
-            ExtractToDirectory(sourceArchiveFileName, destinationDirectoryName, entryNameEncoding: null, overwriteFiles: false);
+        //public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName) =>
+        //    ExtractToDirectory(sourceArchiveFileName, destinationDirectoryName, entryNameEncoding: null, overwriteFiles: false);
 
         /// <summary>
         /// Extracts all of the files in the specified archive to a directory on the file system.
@@ -69,8 +69,8 @@ namespace System.IO.Compression
         /// <param name="sourceArchiveFileName">The path to the archive on the file system that is to be extracted.</param>
         /// <param name="destinationDirectoryName">The path to the directory on the file system. The directory specified must not exist, but the directory that it is contained in must exist.</param>
         /// <param name="overwriteFiles">True to indicate overwrite.</param>
-        public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName, bool overwriteFiles) =>
-            ExtractToDirectory(sourceArchiveFileName, destinationDirectoryName, entryNameEncoding: null, overwriteFiles: overwriteFiles);
+        //public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName, bool overwriteFiles) =>
+        //    ExtractToDirectory(sourceArchiveFileName, destinationDirectoryName, entryNameEncoding: null, overwriteFiles: overwriteFiles);
 
         /// <summary>
         /// Extracts all of the files in the specified archive to a directory on the file system.
@@ -123,8 +123,8 @@ namespace System.IO.Compression
         ///     <para>Note that Unicode encodings other than UTF-8 may not be currently used for the <c>entryNameEncoding</c>,
         ///     otherwise an <see cref="ArgumentException"/> is thrown.</para>
         /// </param>
-        public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName, Encoding? entryNameEncoding) =>
-            ExtractToDirectory(sourceArchiveFileName, destinationDirectoryName, entryNameEncoding: entryNameEncoding, overwriteFiles: false);
+        //public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName, Encoding? entryNameEncoding) =>
+        //    ExtractToDirectory(sourceArchiveFileName, destinationDirectoryName, entryNameEncoding: entryNameEncoding, overwriteFiles: false);
 
         /// <summary>
         /// Extracts all of the files in the specified archive to a directory on the file system.
@@ -178,15 +178,15 @@ namespace System.IO.Compression
         ///     <para>Note that Unicode encodings other than UTF-8 may not be currently used for the <c>entryNameEncoding</c>,
         ///     otherwise an <see cref="ArgumentException"/> is thrown.</para>
         /// </param>
-        public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName, Encoding? entryNameEncoding, bool overwriteFiles)
-        {
-            ArgumentNullException.ThrowIfNull(sourceArchiveFileName);
+        //public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName, Encoding? entryNameEncoding, bool overwriteFiles)
+        //{
+        //    ArgumentNullException.ThrowIfNull(sourceArchiveFileName);
 
-            using (ZipArchive archive = Open(sourceArchiveFileName, ZipArchiveMode.Read, entryNameEncoding))
-            {
-                archive.ExtractToDirectory(destinationDirectoryName, overwriteFiles);
-            }
-        }
+        //    using (ZipArchive archive = Open(sourceArchiveFileName, ZipArchiveMode.Read, entryNameEncoding))
+        //    {
+        //        archive.ExtractToDirectory(destinationDirectoryName, overwriteFiles);
+        //    }
+        //}
 
         /// <summary>
         /// Extracts all the files from the zip archive stored in the specified stream and places them in the specified destination directory on the file system.
@@ -213,8 +213,8 @@ namespace System.IO.Compression
         /// An archive entry was not found or was corrupt.
         /// -or-
         /// An archive entry was compressed by using a compression method that is not supported.</exception>
-        public static void ExtractToDirectory(Stream source, string destinationDirectoryName) =>
-            ExtractToDirectory(source, destinationDirectoryName, entryNameEncoding: null, overwriteFiles: false);
+        //public static void ExtractToDirectory(Stream source, string destinationDirectoryName) =>
+        //    ExtractToDirectory(source, destinationDirectoryName, entryNameEncoding: null, overwriteFiles: false);
 
         /// <summary>
         /// Extracts all the files from the zip archive stored in the specified stream and places them in the specified destination directory on the file system, and optionally allows choosing if the files in the destination directory should be overwritten.
@@ -242,8 +242,8 @@ namespace System.IO.Compression
         /// An archive entry was not found or was corrupt.
         /// -or-
         /// An archive entry was compressed by using a compression method that is not supported.</exception>
-        public static void ExtractToDirectory(Stream source, string destinationDirectoryName, bool overwriteFiles) =>
-            ExtractToDirectory(source, destinationDirectoryName, entryNameEncoding: null, overwriteFiles: overwriteFiles);
+        //public static void ExtractToDirectory(Stream source, string destinationDirectoryName, bool overwriteFiles) =>
+        //    ExtractToDirectory(source, destinationDirectoryName, entryNameEncoding: null, overwriteFiles: overwriteFiles);
 
         /// <summary>
         /// Extracts all the files from the zip archive stored in the specified stream and places them in the specified destination directory on the file system and uses the specified character encoding for entry names.
@@ -279,8 +279,8 @@ namespace System.IO.Compression
         /// An archive entry was not found or was corrupt.
         /// -or-
         /// An archive entry was compressed by using a compression method that is not supported.</exception>
-        public static void ExtractToDirectory(Stream source, string destinationDirectoryName, Encoding? entryNameEncoding) =>
-            ExtractToDirectory(source, destinationDirectoryName, entryNameEncoding: entryNameEncoding, overwriteFiles: false);
+        //public static void ExtractToDirectory(Stream source, string destinationDirectoryName, Encoding? entryNameEncoding) =>
+        //    ExtractToDirectory(source, destinationDirectoryName, entryNameEncoding: entryNameEncoding, overwriteFiles: false);
 
         /// <summary>
         /// Extracts all the files from the zip archive stored in the specified stream and places them in the specified destination directory on the file system, uses the specified character encoding for entry names, and optionally allows choosing if the files in the destination directory should be overwritten.
@@ -317,16 +317,16 @@ namespace System.IO.Compression
         /// An archive entry was not found or was corrupt.
         /// -or-
         /// An archive entry was compressed by using a compression method that is not supported.</exception>
-        public static void ExtractToDirectory(Stream source, string destinationDirectoryName, Encoding? entryNameEncoding, bool overwriteFiles)
-        {
-            ArgumentNullException.ThrowIfNull(source);
-            if (!source.CanRead)
-            {
-                throw new ArgumentException(nameof(source));
-            }
+        //public static void ExtractToDirectory(Stream source, string destinationDirectoryName, Encoding? entryNameEncoding, bool overwriteFiles)
+        //{
+        //    ArgumentNullException.ThrowIfNull(source);
+        //    if (!source.CanRead)
+        //    {
+        //        throw new ArgumentException(nameof(source));
+        //    }
 
-            using ZipArchive archive = new ZipArchive(source, ZipArchiveMode.Read, leaveOpen: true, entryNameEncoding);
-            archive.ExtractToDirectory(destinationDirectoryName, overwriteFiles);
-        }
+        //    using ZipArchive archive = new ZipArchive(source, ZipArchiveMode.Read, leaveOpen: true, entryNameEncoding);
+        //    archive.ExtractToDirectory(destinationDirectoryName, overwriteFiles);
+        //}
     }
 }

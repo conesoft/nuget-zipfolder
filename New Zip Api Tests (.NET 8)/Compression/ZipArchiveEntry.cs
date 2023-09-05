@@ -1,17 +1,13 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
-using static System.IO.Compression.ZipArchiveEntryConstants;
+using static SystemIOCompression.ZipArchiveEntryConstants;
 
-namespace System.IO.Compression
+namespace SystemIOCompression
 {
     // The disposable fields that this class owns get disposed when the ZipArchive it belongs to gets disposed
     public partial class ZipArchiveEntry
@@ -112,7 +108,7 @@ namespace System.IO.Compression
             _versionMadeBySpecification = ZipVersionNeededValues.Default;
             _versionToExtract = ZipVersionNeededValues.Default; // this must happen before following two assignment
             _generalPurposeBitFlag = 0;
-            CompressionMethod = CompressionMethodValues.Deflate;
+            CompressionMethod = CompressionMethodValues.Stored;
             _lastModified = DateTimeOffset.Now;
 
             _compressedSize = 0; // we don't know these yet
@@ -144,71 +140,9 @@ namespace System.IO.Compression
                 throw new ArgumentException();
 
             // grab the stream if we're in create mode
-            if (_archive.Mode == ZipArchiveMode.Create)
+            //if (_archive.Mode == ZipArchiveMode.Create)
             {
                 _archive.AcquireArchiveStream(this);
-            }
-        }
-
-        /// <summary>
-        /// The ZipArchive that this entry belongs to. If this entry has been deleted, this will return null.
-        /// </summary>
-        public ZipArchive Archive => _archive;
-
-        [CLSCompliant(false)]
-        public uint Crc32 => _crc32;
-
-        /// <summary>
-        /// Gets a value that indicates whether the entry is encrypted.
-        /// </summary>
-        public bool IsEncrypted => _isEncrypted;
-
-        /// <summary>
-        /// The compressed size of the entry. If the archive that the entry belongs to is in Create mode, attempts to get this property will always throw an exception. If the archive that the entry belongs to is in update mode, this property will only be valid if the entry has not been opened.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">This property is not available because the entry has been written to or modified.</exception>
-        public long CompressedLength
-        {
-            get
-            {
-                if (_everOpenedForWrite)
-                    throw new InvalidOperationException();
-                return _compressedSize;
-            }
-        }
-
-        public int ExternalAttributes
-        {
-            get
-            {
-                return (int)_externalFileAttr;
-            }
-            set
-            {
-                ThrowIfInvalidArchive();
-                _externalFileAttr = (uint)value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the optional entry comment.
-        /// </summary>
-        /// <remarks>
-        ///The comment encoding is determined by the <c>entryNameEncoding</c> parameter of the <see cref="ZipArchive(Stream,ZipArchiveMode,bool,Encoding?)"/> constructor.
-        /// If the comment byte length is larger than <see cref="ushort.MaxValue"/>, it will be truncated when disposing the archive.
-        /// </remarks>
-        [AllowNull]
-        public string Comment
-        {
-            get => (_archive.EntryNameAndCommentEncoding ?? Encoding.UTF8).GetString(_fileComment);
-            set
-            {
-                _fileComment = ZipHelper.GetEncodedTruncatedBytesFromString(value, _archive.EntryNameAndCommentEncoding, ushort.MaxValue, out bool isUTF8);
-
-                if (isUTF8)
-                {
-                    _generalPurposeBitFlag |= BitFlagValues.UnicodeFileNameAndComment;
-                }
             }
         }
 
@@ -262,61 +196,6 @@ namespace System.IO.Compression
             {
                 return _lastModified;
             }
-            set
-            {
-                ThrowIfInvalidArchive();
-                if (_archive.Mode == ZipArchiveMode.Read)
-                    throw new NotSupportedException();
-                if (_archive.Mode == ZipArchiveMode.Create && _everOpenedForWrite)
-                    throw new IOException();
-                if (value.DateTime.Year < ZipHelper.ValidZipDate_YearMin || value.DateTime.Year > ZipHelper.ValidZipDate_YearMax)
-                    throw new ArgumentOutOfRangeException(nameof(value));
-
-                _lastModified = value;
-            }
-        }
-
-        /// <summary>
-        /// The uncompressed size of the entry. This property is not valid in Create mode, and it is only valid in Update mode if the entry has not been opened.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">This property is not available because the entry has been written to or modified.</exception>
-        public long Length
-        {
-            get
-            {
-                if (_everOpenedForWrite)
-                    throw new InvalidOperationException();
-                return _uncompressedSize;
-            }
-        }
-
-        /// <summary>
-        /// The filename of the entry. This is equivalent to the substring of Fullname that follows the final directory separator character.
-        /// </summary>
-        public string Name => ParseFileName(FullName, _versionMadeByPlatform);
-
-        /// <summary>
-        /// Deletes the entry from the archive.
-        /// </summary>
-        /// <exception cref="IOException">The entry is already open for reading or writing.</exception>
-        /// <exception cref="NotSupportedException">The ZipArchive that this entry belongs to was opened in a mode other than ZipArchiveMode.Update. </exception>
-        /// <exception cref="ObjectDisposedException">The ZipArchive that this entry belongs to has been disposed.</exception>
-        public void Delete()
-        {
-            if (_archive == null)
-                return;
-
-            if (_currentlyOpenForWrite)
-                throw new IOException();
-
-            if (_archive.Mode != ZipArchiveMode.Update)
-                throw new NotSupportedException();
-
-            _archive.ThrowIfDisposed();
-
-            _archive.RemoveEntry(this);
-            _archive = null!;
-            UnloadStreams();
         }
 
         /// <summary>
@@ -329,27 +208,7 @@ namespace System.IO.Compression
         public Stream Open()
         {
             ThrowIfInvalidArchive();
-
-            switch (_archive.Mode)
-            {
-                case ZipArchiveMode.Read:
-                    return OpenInReadMode(checkOpenable: true);
-                case ZipArchiveMode.Create:
-                    return OpenInWriteMode();
-                case ZipArchiveMode.Update:
-                default:
-                    Debug.Assert(_archive.Mode == ZipArchiveMode.Update);
-                    return OpenInUpdateMode();
-            }
-        }
-
-        /// <summary>
-        /// Returns the FullName of the entry.
-        /// </summary>
-        /// <returns>FullName of the entry</returns>
-        public override string ToString()
-        {
-            return FullName;
+            return OpenInWriteMode();
         }
 
         // Only allow opening ZipArchives with large ZipArchiveEntries in update mode when running in a 64-bit process.
@@ -377,64 +236,11 @@ namespace System.IO.Compression
             }
         }
 
-        private MemoryStream UncompressedData
-        {
-            get
-            {
-                if (_storedUncompressedData == null)
-                {
-                    // this means we have never opened it before
-
-                    // if _uncompressedSize > int.MaxValue, it's still okay, because MemoryStream will just
-                    // grow as data is copied into it
-                    _storedUncompressedData = new MemoryStream((int)_uncompressedSize);
-
-                    if (_originallyInArchive)
-                    {
-                        using (Stream decompressor = OpenInReadMode(false))
-                        {
-                            try
-                            {
-                                decompressor.CopyTo(_storedUncompressedData);
-                            }
-                            catch (InvalidDataException)
-                            {
-                                // this is the case where the archive say the entry is deflate, but deflateStream
-                                // throws an InvalidDataException. This property should only be getting accessed in
-                                // Update mode, so we want to make sure _storedUncompressedData stays null so
-                                // that later when we dispose the archive, this entry loads the compressedBytes, and
-                                // copies them straight over
-                                _storedUncompressedData.Dispose();
-                                _storedUncompressedData = null;
-                                _currentlyOpenForWrite = false;
-                                _everOpenedForWrite = false;
-                                throw;
-                            }
-                        }
-                    }
-
-                    // if they start modifying it and the compression method is not "store", we should make sure it will get deflated
-                    if (CompressionMethod != CompressionMethodValues.Stored)
-                    {
-                        CompressionMethod = CompressionMethodValues.Deflate;
-                    }
-                }
-
-                return _storedUncompressedData;
-            }
-        }
-
         private CompressionMethodValues CompressionMethod
         {
             get { return _storedCompressionMethod; }
             set
-            {
-                if (value == CompressionMethodValues.Deflate)
-                    VersionToExtractAtLeast(ZipVersionNeededValues.Deflate);
-                else if (value == CompressionMethodValues.Deflate64)
-                    VersionToExtractAtLeast(ZipVersionNeededValues.Deflate64);
-                _storedCompressionMethod = value;
-            }
+            { _storedCompressionMethod = value; }
         }
 
         // does almost everything you need to do to forget about this entry
@@ -557,52 +363,6 @@ namespace System.IO.Compression
                 writer.Write(_fileComment);
         }
 
-        // returns false if fails, will get called on every entry before closing in update mode
-        // can throw InvalidDataException
-        internal bool LoadLocalHeaderExtraFieldAndCompressedBytesIfNeeded()
-        {
-            // we should have made this exact call in _archive.Init through ThrowIfOpenable
-            Debug.Assert(IsOpenable(false, true, out _));
-
-            // load local header's extra fields. it will be null if we couldn't read for some reason
-            if (_originallyInArchive)
-            {
-                _archive.ArchiveStream.Seek(_offsetOfLocalHeader, SeekOrigin.Begin);
-
-                Debug.Assert(_archive.ArchiveReader != null);
-                _lhUnknownExtraFields = ZipLocalFileHeader.GetExtraFields(_archive.ArchiveReader);
-            }
-
-            if (!_everOpenedForWrite && _originallyInArchive)
-            {
-                // we know that it is openable at this point
-                int MaxSingleBufferSize = Array.MaxLength;
-
-                _compressedBytes = new byte[(_compressedSize / MaxSingleBufferSize) + 1][];
-                for (int i = 0; i < _compressedBytes.Length - 1; i++)
-                {
-                    _compressedBytes[i] = new byte[MaxSingleBufferSize];
-                }
-                _compressedBytes[_compressedBytes.Length - 1] = new byte[_compressedSize % MaxSingleBufferSize];
-
-                _archive.ArchiveStream.Seek(OffsetOfCompressedData, SeekOrigin.Begin);
-
-                for (int i = 0; i < _compressedBytes.Length - 1; i++)
-                {
-                    ZipHelper.ReadBytes(_archive.ArchiveStream, _compressedBytes[i], MaxSingleBufferSize);
-                }
-                ZipHelper.ReadBytes(_archive.ArchiveStream, _compressedBytes[_compressedBytes.Length - 1], (int)(_compressedSize % MaxSingleBufferSize));
-            }
-
-            return true;
-        }
-
-        internal void ThrowIfNotOpenable(bool needToUncompress, bool needToLoadIntoMemory)
-        {
-            if (!IsOpenable(needToUncompress, needToLoadIntoMemory, out string? message))
-                throw new InvalidDataException(message);
-        }
-
         private void DetectEntryNameVersion()
         {
             if (ParseFileName(_storedEntryName, _versionMadeByPlatform) == "")
@@ -613,24 +373,9 @@ namespace System.IO.Compression
 
         private CheckSumAndSizeWriteStream GetDataCompressor(Stream backingStream, bool leaveBackingStreamOpen, EventHandler? onClose)
         {
-            // stream stack: backingStream -> DeflateStream -> CheckSumWriteStream
+            bool isIntermediateStream = false;
+            Stream compressorStream = backingStream;
 
-            // By default we compress with deflate, except if compression level is set to NoCompression then stored is used.
-            // Stored is also used for empty files, but we don't actually call through this function for that - we just write the stored value in the header
-            // Deflate64 is not supported on all platforms
-            Debug.Assert(CompressionMethod == CompressionMethodValues.Deflate
-                || CompressionMethod == CompressionMethodValues.Stored);
-
-            bool isIntermediateStream = true;
-            Stream compressorStream;
-            switch (CompressionMethod)
-            {
-                case CompressionMethodValues.Stored:
-                default:
-                    compressorStream = backingStream;
-                    isIntermediateStream = false;
-                    break;
-            }
             bool leaveCompressorStreamOpenOnClose = leaveBackingStreamOpen && !isIntermediateStream;
             var checkSumStream = new CheckSumAndSizeWriteStream(
                 compressorStream,
@@ -647,33 +392,6 @@ namespace System.IO.Compression
                 });
 
             return checkSumStream;
-        }
-
-        private Stream GetDataDecompressor(Stream compressedStreamToRead)
-        {
-            Stream? uncompressedStream;
-            switch (CompressionMethod)
-            {
-                case CompressionMethodValues.Stored:
-                default:
-                    // we can assume that only deflate/deflate64/stored are allowed because we assume that
-                    // IsOpenable is checked before this function is called
-                    Debug.Assert(CompressionMethod == CompressionMethodValues.Stored);
-
-                    uncompressedStream = compressedStreamToRead;
-                    break;
-            }
-
-            return uncompressedStream;
-        }
-
-        private Stream OpenInReadMode(bool checkOpenable)
-        {
-            if (checkOpenable)
-                ThrowIfNotOpenable(needToUncompress: true, needToLoadIntoMemory: false);
-
-            Stream compressedStream = new SubReadStream(_archive.ArchiveStream, OffsetOfCompressedData, _compressedSize);
-            return GetDataDecompressor(compressedStream);
         }
 
         private WrappedStream OpenInWriteMode()
@@ -695,27 +413,6 @@ namespace System.IO.Compression
             _outstandingWriteStream = new DirectToArchiveWriterStream(crcSizeStream, this);
 
             return new WrappedStream(baseStream: _outstandingWriteStream, closeBaseStream: true);
-        }
-
-        private WrappedStream OpenInUpdateMode()
-        {
-            if (_currentlyOpenForWrite)
-                throw new IOException();
-
-            ThrowIfNotOpenable(needToUncompress: true, needToLoadIntoMemory: true);
-
-            _everOpenedForWrite = true;
-            _currentlyOpenForWrite = true;
-            // always put it at the beginning for them
-            UncompressedData.Seek(0, SeekOrigin.Begin);
-            return new WrappedStream(UncompressedData, this, thisRef =>
-            {
-                // once they close, we know uncompressed length, but still not compressed length
-                // so we don't fill in any size information
-                // those fields get figured out when we call GetCompressor as we write it to
-                // the actual archive
-                thisRef!._currentlyOpenForWrite = false;
-            });
         }
 
         private bool IsOpenable(bool needToUncompress, bool needToLoadIntoMemory, out string? message)
@@ -804,44 +501,12 @@ namespace System.IO.Compression
             }
             else
             {
-                // if we have a non-seekable stream, don't worry about sizes at all, and just set the right bit
-                // if we are using the data descriptor, then sizes and crc should be set to 0 in the header
-                if (_archive.Mode == ZipArchiveMode.Create && _archive.ArchiveStream.CanSeek == false)
-                {
-                    _generalPurposeBitFlag |= BitFlagValues.DataDescriptor;
-                    zip64Used = false;
-                    compressedSizeTruncated = 0;
-                    uncompressedSizeTruncated = 0;
-                    // the crc should not have been set if we are in create mode, but clear it just to be sure
-                    Debug.Assert(_crc32 == 0);
-                }
-                else // if we are not in streaming mode, we have to decide if we want to write zip64 headers
-                {
-                    // We are in seekable mode so we will not need to write a data descriptor
-                    _generalPurposeBitFlag &= ~BitFlagValues.DataDescriptor;
-                    if (SizesTooLarge()
-#if DEBUG_FORCE_ZIP64
-                        || (_archive._forceZip64 && _archive.Mode == ZipArchiveMode.Update)
-#endif
-                        )
-                    {
-                        zip64Used = true;
-                        compressedSizeTruncated = ZipHelper.Mask32Bit;
-                        uncompressedSizeTruncated = ZipHelper.Mask32Bit;
-
-                        // prepare Zip64 extra field object. If we have one of the sizes, the other must go in there
-                        zip64ExtraField.CompressedSize = _compressedSize;
-                        zip64ExtraField.UncompressedSize = _uncompressedSize;
-
-                        VersionToExtractAtLeast(ZipVersionNeededValues.Zip64);
-                    }
-                    else
-                    {
-                        zip64Used = false;
-                        compressedSizeTruncated = (uint)_compressedSize;
-                        uncompressedSizeTruncated = (uint)_uncompressedSize;
-                    }
-                }
+                _generalPurposeBitFlag |= BitFlagValues.DataDescriptor;
+                zip64Used = false;
+                compressedSizeTruncated = 0;
+                uncompressedSizeTruncated = 0;
+                // the crc should not have been set if we are in create mode, but clear it just to be sure
+                Debug.Assert(_crc32 == 0);
             }
 
             // save offset
@@ -923,14 +588,6 @@ namespace System.IO.Compression
                             _archive.ArchiveStream.Write(compressedBytes, 0, compressedBytes.Length);
                         }
                     }
-                }
-            }
-            else // there is no data in the file, but if we are in update mode, we still need to write a header
-            {
-                if (_archive.Mode == ZipArchiveMode.Update || !_everOpenedForWrite)
-                {
-                    _everOpenedForWrite = true;
-                    WriteLocalFileHeader(isEmptyFile: true);
                 }
             }
         }
@@ -1290,6 +947,6 @@ namespace System.IO.Compression
         [Flags]
         internal enum BitFlagValues : ushort { IsEncrypted = 0x1, DataDescriptor = 0x8, UnicodeFileNameAndComment = 0x800 }
 
-        internal enum CompressionMethodValues : ushort { Stored = 0x0, Deflate = 0x8, Deflate64 = 0x9, BZip2 = 0xC, LZMA = 0xE }
+        internal enum CompressionMethodValues : ushort { Stored = 0x0 }
     }
 }

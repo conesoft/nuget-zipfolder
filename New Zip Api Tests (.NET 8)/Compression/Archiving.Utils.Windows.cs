@@ -13,42 +13,42 @@ namespace System.IO
             "\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F" +
             "\"*:<>?|");
 
-        internal static string SanitizeEntryFilePath(string entryPath, bool preserveDriveRoot = false)
-        {
-            // When preserveDriveRoot is set, preserve the colon in 'c:\'.
-            int offset = 0;
-            if (preserveDriveRoot && entryPath.Length >= 3 && entryPath[1] == ':' && Path.IsPathFullyQualified(entryPath))
-            {
-                offset = 3;
-            }
+        //internal static string SanitizeEntryFilePath(string entryPath, bool preserveDriveRoot = false)
+        //{
+        //    // When preserveDriveRoot is set, preserve the colon in 'c:\'.
+        //    int offset = 0;
+        //    if (preserveDriveRoot && entryPath.Length >= 3 && entryPath[1] == ':' && Path.IsPathFullyQualified(entryPath))
+        //    {
+        //        offset = 3;
+        //    }
 
-            // Find the first illegal character in the entry path.
-            int i = entryPath.AsSpan(offset).IndexOfAny(s_illegalChars);
-            if (i < 0)
-            {
-                // There weren't any characters to sanitize.  Just return the original string.
-                return entryPath;
-            }
-            i += offset;
+        //    // Find the first illegal character in the entry path.
+        //    int i = entryPath.AsSpan(offset).IndexOfAny(s_illegalChars);
+        //    if (i < 0)
+        //    {
+        //        // There weren't any characters to sanitize.  Just return the original string.
+        //        return entryPath;
+        //    }
+        //    i += offset;
 
-            // We found at least one character that needs to be replaced.
-            return string.Create(entryPath.Length, (i, entryPath), static (dest, state) =>
-            {
-                string entryPath = state.entryPath;
+        //    // We found at least one character that needs to be replaced.
+        //    return string.Create(entryPath.Length, (i, entryPath), static (dest, state) =>
+        //    {
+        //        string entryPath = state.entryPath;
 
-                // Copy over to the new string everything until the character, then
-                // substitute for the found character.
-                entryPath.AsSpan(0, state.i).CopyTo(dest);
-                dest[state.i] = '_';
+        //        // Copy over to the new string everything until the character, then
+        //        // substitute for the found character.
+        //        entryPath.AsSpan(0, state.i).CopyTo(dest);
+        //        dest[state.i] = '_';
 
-                // Continue looking for and replacing any more illegal characters.
-                for (int i = state.i + 1; i < entryPath.Length; i++)
-                {
-                    char c = entryPath[i];
-                    dest[i] = s_illegalChars.Contains(c) ? '_' : c;
-                }
-            });
-        }
+        //        // Continue looking for and replacing any more illegal characters.
+        //        for (int i = state.i + 1; i < entryPath.Length; i++)
+        //        {
+        //            char c = entryPath[i];
+        //            dest[i] = s_illegalChars.Contains(c) ? '_' : c;
+        //        }
+        //    });
+        //}
 
         public static unsafe string EntryFromPath(ReadOnlySpan<char> path, bool appendPathSeparator = false)
         {

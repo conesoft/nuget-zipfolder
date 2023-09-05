@@ -4,7 +4,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace System.IO.Compression
+namespace SystemIOCompression
 {
     internal static class Crc32Helper
     {

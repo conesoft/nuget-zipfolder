@@ -2,8 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.ComponentModel;
+using System.Diagnostics;
 
-namespace System.IO.Compression
+namespace SystemIOCompression
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static partial class ZipFileExtensions
@@ -41,8 +42,8 @@ namespace System.IO.Compression
         /// relative or absolute path information. Relative path information is interpreted as relative to the current working directory.</param>
         /// <param name="entryName">The name of the entry to be created.</param>
         /// <returns>A wrapper for the newly created entry.</returns>
-        public static ZipArchiveEntry CreateEntryFromFile(this ZipArchive destination, string sourceFileName, string entryName) =>
-            DoCreateEntryFromFile(destination, sourceFileName, entryName, null);
+        //public static ZipArchiveEntry CreateEntryFromFile(this ZipArchive destination, string sourceFileName, string entryName) =>
+        //    DoCreateEntryFromFile(destination, sourceFileName, entryName, null);
 
 
         /// <summary>
@@ -73,12 +74,12 @@ namespace System.IO.Compression
         /// <param name="entryName">The name of the entry to be created.</param>
         /// <param name="compressionLevel">The level of the compression (speed/memory vs. compressed size trade-off).</param>
         /// <returns>A wrapper for the newly created entry.</returns>
-        public static ZipArchiveEntry CreateEntryFromFile(this ZipArchive destination,
-                                                          string sourceFileName, string entryName, CompressionLevel compressionLevel) =>
-            DoCreateEntryFromFile(destination, sourceFileName, entryName, compressionLevel);
+        //public static ZipArchiveEntry CreateEntryFromFile(this ZipArchive destination,
+        //                                                  string sourceFileName, string entryName, CompressionLevel compressionLevel) =>
+        //    DoCreateEntryFromFile(destination, sourceFileName, entryName, compressionLevel);
 
         internal static ZipArchiveEntry DoCreateEntryFromFile(this ZipArchive destination,
-                                                              string sourceFileName, string entryName, CompressionLevel? compressionLevel)
+                                                              string sourceFileName, string entryName)
         {
             ArgumentNullException.ThrowIfNull(destination);
             ArgumentNullException.ThrowIfNull(sourceFileName);
@@ -91,9 +92,7 @@ namespace System.IO.Compression
 
             using (FileStream fs = new FileStream(sourceFileName, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 0x1000, useAsync: false))
             {
-                ZipArchiveEntry entry = compressionLevel.HasValue
-                                    ? destination.CreateEntry(entryName, compressionLevel.Value)
-                                    : destination.CreateEntry(entryName);
+                ZipArchiveEntry entry = destination.CreateEntry(entryName);
 
                 DateTime lastWrite = File.GetLastWriteTime(sourceFileName);
 
@@ -102,12 +101,14 @@ namespace System.IO.Compression
                 if (lastWrite.Year < 1980 || lastWrite.Year > 2107)
                     lastWrite = new DateTime(1980, 1, 1, 0, 0, 0);
 
-                entry.LastWriteTime = lastWrite;
+                //entry.LastWriteTime = lastWrite;
 
                 SetExternalAttributes(fs, entry);
 
                 using (Stream es = entry.Open())
+                {
                     fs.CopyTo(es);
+                }
 
                 return entry;
             }

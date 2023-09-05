@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace System.IO.Compression
+namespace SystemIOCompression
 {
     internal sealed class WrappedStream : Stream
     {

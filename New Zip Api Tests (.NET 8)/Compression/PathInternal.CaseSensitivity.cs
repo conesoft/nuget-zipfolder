@@ -9,23 +9,23 @@ namespace System.IO
     internal static partial class PathInternal
     {
         /// <summary>Returns a comparison that can be used to compare file and directory names for equality.</summary>
-        internal static StringComparison StringComparison
-        {
-            get
-            {
-                return IsCaseSensitive ?
-                    StringComparison.Ordinal :
-                    StringComparison.OrdinalIgnoreCase;
-            }
-        }
+        //internal static StringComparison StringComparison
+        //{
+        //    get
+        //    {
+        //        return IsCaseSensitive ?
+        //            StringComparison.Ordinal :
+        //            StringComparison.OrdinalIgnoreCase;
+        //    }
+        //}
 
         /// <summary>Gets whether the system is case-sensitive.</summary>
-        internal static bool IsCaseSensitive
-        {
-            get
-            {
-                return !(OperatingSystem.IsWindows() || OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsWatchOS());
-            }
-        }
+        //internal static bool IsCaseSensitive
+        //{
+        //    get
+        //    {
+        //        return !(OperatingSystem.IsWindows() || OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsWatchOS());
+        //    }
+        //}
     }
 }
