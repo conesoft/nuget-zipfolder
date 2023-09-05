@@ -105,9 +105,10 @@ namespace SystemIOCompression
 
                 SetExternalAttributes(fs, entry);
 
-                using (Stream es = entry.Open())
+                using (WrappedStream es = entry.Open())
                 {
-                    fs.CopyTo(es);
+                    es.AdvancePosition(new FileInfo(sourceFileName).Length);
+//                    fs.CopyTo(es);
                 }
 
                 return entry;

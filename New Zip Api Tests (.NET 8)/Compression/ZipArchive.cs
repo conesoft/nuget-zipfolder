@@ -12,7 +12,7 @@ namespace SystemIOCompression
 {
     public class ZipArchive : IDisposable
     {
-        private readonly Stream _archiveStream;
+        private readonly PositionWrapperStream _archiveStream;
         private ZipArchiveEntry? _archiveStreamOwner;
         private readonly BinaryReader? _archiveReader;
         private readonly List<ZipArchiveEntry> _entries;
@@ -28,7 +28,7 @@ namespace SystemIOCompression
         private byte[] _archiveComment;
         private Encoding? _entryNameAndCommentEncoding;
 
-        public ZipArchive(Stream stream, bool leaveOpen, Encoding? entryNameEncoding)
+        public ZipArchive(PositionWrapperStream stream, bool leaveOpen, Encoding? entryNameEncoding)
         {
             ArgumentNullException.ThrowIfNull(stream);
 
@@ -102,7 +102,7 @@ namespace SystemIOCompression
 
         internal BinaryReader? ArchiveReader => _archiveReader;
 
-        internal Stream ArchiveStream => _archiveStream;
+        internal PositionWrapperStream ArchiveStream => _archiveStream;
 
         internal uint NumberOfThisDisk => _numberOfThisDisk;
 

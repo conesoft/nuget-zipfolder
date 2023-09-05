@@ -5,12 +5,13 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using static SystemIOCompression.ZipArchiveEntry;
 
 namespace SystemIOCompression
 {
-    internal sealed class WrappedStream : Stream
+    sealed public class WrappedStream : Stream
     {
-        private readonly Stream _baseStream;
+        private readonly DirectToArchiveWriterStream _baseStream;
         private readonly bool _closeBaseStream;
 
         // Delegate that will be invoked on stream disposing
@@ -20,10 +21,10 @@ namespace SystemIOCompression
         private readonly ZipArchiveEntry? _zipArchiveEntry;
         private bool _isDisposed;
 
-        internal WrappedStream(Stream baseStream, bool closeBaseStream)
+        internal WrappedStream(DirectToArchiveWriterStream baseStream, bool closeBaseStream)
             : this(baseStream, closeBaseStream, null, null) { }
 
-        private WrappedStream(Stream baseStream, bool closeBaseStream, ZipArchiveEntry? entry, Action<ZipArchiveEntry?>? onClosed)
+        private WrappedStream(DirectToArchiveWriterStream baseStream, bool closeBaseStream, ZipArchiveEntry? entry, Action<ZipArchiveEntry?>? onClosed)
         {
             _baseStream = baseStream;
             _closeBaseStream = closeBaseStream;
@@ -32,7 +33,7 @@ namespace SystemIOCompression
             _isDisposed = false;
         }
 
-        internal WrappedStream(Stream baseStream, ZipArchiveEntry entry, Action<ZipArchiveEntry?>? onClosed)
+        internal WrappedStream(DirectToArchiveWriterStream baseStream, ZipArchiveEntry entry, Action<ZipArchiveEntry?>? onClosed)
             : this(baseStream, false, entry, onClosed) { }
 
         public override long Length
@@ -43,6 +44,8 @@ namespace SystemIOCompression
                 return _baseStream.Length;
             }
         }
+
+        public void AdvancePosition(long amount) => _baseStream.AdvancePosition(amount);
 
         public override long Position
         {
@@ -55,8 +58,6 @@ namespace SystemIOCompression
             {
                 ThrowIfDisposed();
                 ThrowIfCantSeek();
-
-                _baseStream.Position = value;
             }
         }
 
@@ -400,10 +401,10 @@ namespace SystemIOCompression
         }
     }
 
-    internal sealed class CheckSumAndSizeWriteStream : Stream
+    public sealed class CheckSumAndSizeWriteStream : Stream
     {
-        private readonly Stream _baseStream;
-        private readonly Stream _baseBaseStream;
+        private readonly PositionWrapperStream _baseStream;
+        private readonly PositionWrapperStream _baseBaseStream;
         private long _position;
         private uint _checksum;
 
@@ -428,7 +429,7 @@ namespace SystemIOCompression
         // baseBaseStream it's a backingStream, passed here so as to avoid closure allocation,
         // zipArchiveEntry passed here so as to avoid closure allocation,
         // onClose handler passed here so as to avoid closure allocation
-        public CheckSumAndSizeWriteStream(Stream baseStream, Stream baseBaseStream, bool leaveOpenOnClose,
+        public CheckSumAndSizeWriteStream(PositionWrapperStream baseStream, PositionWrapperStream baseBaseStream, bool leaveOpenOnClose,
             ZipArchiveEntry entry, EventHandler? onClose,
             Action<long, long, uint, Stream, ZipArchiveEntry, EventHandler?> saveCrcAndSizes)
         {
@@ -443,6 +444,12 @@ namespace SystemIOCompression
             _zipArchiveEntry = entry;
             _onClose = onClose;
             _saveCrcAndSizes = saveCrcAndSizes;
+        }
+
+        public void AdvancePosition(long amount)
+        {
+            _position += amount;
+            _baseStream.AdvancePosition(amount);
         }
 
         public override long Length

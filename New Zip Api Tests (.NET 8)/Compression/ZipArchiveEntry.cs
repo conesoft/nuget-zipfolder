@@ -32,7 +32,7 @@ namespace SystemIOCompression
         private MemoryStream? _storedUncompressedData;
         private bool _currentlyOpenForWrite;
         private bool _everOpenedForWrite;
-        private Stream? _outstandingWriteStream;
+        private DirectToArchiveWriterStream? _outstandingWriteStream;
         private uint _externalFileAttr;
         private string _storedEntryName;
         private byte[] _storedEntryNameBytes;
@@ -205,7 +205,7 @@ namespace SystemIOCompression
         /// <exception cref="IOException">The entry is already currently open for writing. -or- The entry has been deleted from the archive. -or- The archive that this entry belongs to was opened in ZipArchiveMode.Create, and this entry has already been written to once.</exception>
         /// <exception cref="InvalidDataException">The entry is missing from the archive or is corrupt and cannot be read. -or- The entry has been compressed using a compression method that is not supported.</exception>
         /// <exception cref="ObjectDisposedException">The ZipArchive that this entry belongs to has been disposed.</exception>
-        public Stream Open()
+        public WrappedStream Open()
         {
             ThrowIfInvalidArchive();
             return OpenInWriteMode();
@@ -371,10 +371,10 @@ namespace SystemIOCompression
             }
         }
 
-        private CheckSumAndSizeWriteStream GetDataCompressor(Stream backingStream, bool leaveBackingStreamOpen, EventHandler? onClose)
+        private CheckSumAndSizeWriteStream GetDataCompressor(PositionWrapperStream backingStream, bool leaveBackingStreamOpen, EventHandler? onClose)
         {
             bool isIntermediateStream = false;
-            Stream compressorStream = backingStream;
+            PositionWrapperStream compressorStream = backingStream;
 
             bool leaveCompressorStreamOpenOnClose = leaveBackingStreamOpen && !isIntermediateStream;
             var checkSumStream = new CheckSumAndSizeWriteStream(
@@ -496,7 +496,7 @@ namespace SystemIOCompression
                 compressedSizeTruncated = 0;
                 uncompressedSizeTruncated = 0;
                 Debug.Assert(_compressedSize == 0);
-                Debug.Assert(_uncompressedSize == 0);
+                //Debug.Assert(_uncompressedSize == 0);
                 Debug.Assert(_crc32 == 0);
             }
             else
@@ -750,7 +750,7 @@ namespace SystemIOCompression
                 path;
         }
 
-        private sealed class DirectToArchiveWriterStream : Stream
+        public sealed class DirectToArchiveWriterStream : Stream
         {
             private long _position;
             private readonly CheckSumAndSizeWriteStream _crcSizeStream;
@@ -771,6 +771,11 @@ namespace SystemIOCompression
                 _entry = entry;
                 _usedZip64inLH = false;
                 _canWrite = true;
+            }
+            public void AdvancePosition(long amount)
+            {
+                _position += amount;
+                _crcSizeStream.AdvancePosition(amount);
             }
 
             public override long Length

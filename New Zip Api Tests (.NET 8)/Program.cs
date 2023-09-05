@@ -23,13 +23,14 @@ Console.WriteLine(timer.Elapsed.Humanize(precision: 2));
 
 static (long length, TimeSpan elapsed) CountFast_(string source)
 {
-    return (0, TimeSpan.Zero);
+    using var stream = new PositionWrapperStream();
+    return WriteZipInternal_(source, stream, defaultNamespace: false);
 }
 
 static (long length, TimeSpan elapsed) Count_(string source)
 {
     using var stream = new PositionWrapperStream();
-    return WriteZipInternal_(source, stream, defaultNamespace: false);
+    return WriteZipInternal_(source, stream, defaultNamespace: true);
 }
 
 static (long length, TimeSpan elapsed) WriteZip_(string source, string target)
@@ -49,7 +50,7 @@ static (long length, TimeSpan elapsed) WriteZipInternal_(string source, Stream s
     }
     else
     {
-        SystemIOCompression.ZipFile.CreateFromDirectory(source, stream);
+        SystemIOCompression.ZipFile.CreateFromDirectory(source, (PositionWrapperStream)stream);
     }
 
     timer.Stop();

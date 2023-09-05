@@ -1,4 +1,4 @@
-﻿class PositionWrapperStream : Stream
+﻿public class PositionWrapperStream : Stream
 {
     private long pos = 0;
 
@@ -8,8 +8,9 @@
     public override long Position
     {
         get { return pos; }
-        set { throw new NotSupportedException(); }
+        set { pos = value; }
     }
+    public void AdvancePosition(long amount) => pos += amount;
 
     public override void Write(byte[] buffer, int offset, int count)
     {
