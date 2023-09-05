@@ -1,13 +1,14 @@
 ﻿using Humanizer;
 using System.Diagnostics;
 
-var source = @"C:\Temp\Zip\Data";
-var target = @"C:\Temp\Zip\Data.zip";
+var source = @"C:\Users\davep\Downloads\TNG\Season 1";
+var target = $@"{source}.zip";
 
 var timer = new Stopwatch();
 timer.Start();
 {
     var c = 16106127864;
+    c = 12595912021;
     Console.WriteLine($"{c} - {c.Bytes()}");
     var b = CountFast_(source);
     Console.WriteLine($"{b.length} - {b.length.Bytes()} in {b.elapsed.Humanize()}");
@@ -17,6 +18,16 @@ timer.Start();
     //Console.WriteLine($"{y.length} - {y.length.Bytes()} in {y.elapsed.Humanize()}");
     var z = new FileInfo(target).Length;
     Console.WriteLine($"{z} - {z.Bytes()}");
+
+    if (b.length != x.length)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"{x.length - b.length} - {(x.length - b.length).Bytes()}");
+    }
+    else
+    {
+        Console.WriteLine("success !!");
+    }
 }
 timer.Stop();
 Console.WriteLine(timer.Elapsed.Humanize(precision: 2));
