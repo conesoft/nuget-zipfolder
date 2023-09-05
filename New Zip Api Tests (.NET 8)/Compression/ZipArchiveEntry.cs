@@ -30,7 +30,7 @@ namespace SystemIOCompression
         // An array of buffers, each a maximum of MaxSingleBufferSize in size
         private byte[][]? _compressedBytes;
         private MemoryStream? _storedUncompressedData;
-        private bool _currentlyOpenForWrite;
+        //private bool _currentlyOpenForWrite;
         private bool _everOpenedForWrite;
         private DirectToArchiveWriterStream? _outstandingWriteStream;
         private uint _externalFileAttr;
@@ -68,7 +68,7 @@ namespace SystemIOCompression
 
             _compressedBytes = null;
             _storedUncompressedData = null;
-            _currentlyOpenForWrite = false;
+            //_currentlyOpenForWrite = false;
             _everOpenedForWrite = false;
             _outstandingWriteStream = null;
 
@@ -123,7 +123,7 @@ namespace SystemIOCompression
 
             _compressedBytes = null;
             _storedUncompressedData = null;
-            _currentlyOpenForWrite = false;
+            //_currentlyOpenForWrite = false;
             _everOpenedForWrite = false;
             _outstandingWriteStream = null;
 

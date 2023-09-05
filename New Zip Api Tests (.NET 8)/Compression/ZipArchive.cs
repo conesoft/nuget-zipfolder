@@ -22,7 +22,7 @@ namespace SystemIOCompression
         private readonly bool _leaveOpen;
         //private long _centralDirectoryStart; //only valid after ReadCentralDirectory
         private bool _isDisposed;
-        private uint _numberOfThisDisk; //only valid after ReadCentralDirectory
+        //private uint _numberOfThisDisk; //only valid after ReadCentralDirectory
         //private long _expectedNumberOfEntries;
         private readonly Stream? _backingStream;
         private byte[] _archiveComment;
@@ -104,7 +104,7 @@ namespace SystemIOCompression
 
         internal PositionWrapperStream ArchiveStream => _archiveStream;
 
-        internal uint NumberOfThisDisk => _numberOfThisDisk;
+        internal uint NumberOfThisDisk => 0;
 
         internal Encoding? EntryNameAndCommentEncoding
         {

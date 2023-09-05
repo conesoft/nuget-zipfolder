@@ -26,16 +26,33 @@ timer.Start();
     }
     else
     {
+        Console.WriteLine();
         Console.WriteLine("success !!");
     }
+    Console.WriteLine();
 }
 timer.Stop();
 Console.WriteLine(timer.Elapsed.Humanize(precision: 2));
 
 static (long length, TimeSpan elapsed) CountFast_(string source)
 {
+    const long _4gb = (long)4 * 1024 * 1024 * 1024;
+
+    var files = Directory.GetFiles(source);
+    var filelengths = files.Select(f => new FileInfo(f).Length).ToArray();
+    var missedbits = (long)0;
+
+    missedbits += files.Length * 16;
+    missedbits += filelengths.Sum() >= _4gb ? -12 : 0;
+    missedbits += filelengths.Any(l => l >= _4gb) ? 4 : 0;
+    missedbits += filelengths.Count(l => l >= _4gb) * 8;
+
     using var stream = new PositionWrapperStream();
-    return WriteZipInternal_(source, stream, defaultNamespace: false);
+    var results = WriteZipInternal_(source, stream, defaultNamespace: false);
+
+    Console.WriteLine(filelengths.Sum() + " <-> " + results.length);
+
+    return (results.length + missedbits, results.elapsed);
 }
 
 static (long length, TimeSpan elapsed) Count_(string source)
