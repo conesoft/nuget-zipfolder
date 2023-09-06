@@ -78,7 +78,7 @@ static (long length, TimeSpan elapsed) WriteZipInternal_(string source, Stream s
     }
     else
     {
-        SystemIOCompression.ZipFile.CreateFromDirectory(source, (PositionWrapperStream)stream);
+        Counting.ZipFile.CreateFromDirectory(source, (PositionWrapperStream)stream);
     }
 
     timer.Stop();
