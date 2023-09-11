@@ -35,6 +35,8 @@ public class FolderToZip
 
     public void StreamTo(Stream stream)
     {
-        SystemIOCompression.ZipFile.CreateFromDirectory(source, new FileAppendOnlyWrapperStream(stream));
+        using var appendOnlyStream = new FileAppendOnlyWrapperStream(stream);
+        SystemIOCompression.ZipFile.CreateFromDirectory(source, appendOnlyStream);
+        appendOnlyStream.Flush();
     }
 }
