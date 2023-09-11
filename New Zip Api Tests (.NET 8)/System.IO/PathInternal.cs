@@ -103,7 +103,7 @@ namespace System.IO
         //{
         //    var sb = new ValueStringBuilder(stackalloc char[260 /* PathInternal.MaxShortPath */]);
 
-        //    if (RemoveRelativeSegments(path.AsSpan(), rootLength, ref sb))
+        //    if (RemoveRelativeSegments(path.AsSpan(), rootLength, sb))
         //    {
         //        path = sb.ToString();
         //    }
@@ -119,7 +119,7 @@ namespace System.IO
         /// <param name="rootLength">The length of the root of the given path</param>
         /// <param name="sb">String builder that will store the result</param>
         /// <returns>"true" if the path was modified</returns>
-        //internal static bool RemoveRelativeSegments(ReadOnlySpan<char> path, int rootLength, ref ValueStringBuilder sb)
+        //internal static bool RemoveRelativeSegments(ReadOnlySpan<char> path, int rootLength, ValueStringBuilder sb)
         //{
         //    Debug.Assert(rootLength > 0);
         //    bool flippedSeparator = false;

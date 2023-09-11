@@ -107,8 +107,7 @@ namespace SystemIOCompression
 
                 using (WrappedStream es = entry.Open())
                 {
-                    es.AdvancePosition(new FileInfo(sourceFileName).Length);
-//                    fs.CopyTo(es);
+                    fs.CopyTo(es);
                 }
 
                 return entry;

@@ -194,21 +194,21 @@ namespace Counting
         /// <param name="source">The stream from which the zip archive is to be extracted.</param>
         /// <param name="destinationDirectoryName">The path to the directory in which to place the extracted files, specified as a relative or absolute path. A relative path is interpreted as relative to the current working directory.</param>
         /// <remarks> This method creates the specified directory and all subdirectories. The destination directory cannot already exist.
-        /// Exceptions related to validating the paths in the <paramref name="destinationDirectoryName"/> or the files in the zip archive contained in <paramref name="source"/> parameters are thrown before extraction. Otherwise, if an error occurs during extraction, the archive remains partially extracted.
-        /// Each extracted file has the same relative path to the directory specified by <paramref name="destinationDirectoryName"/> as its source entry has to the root of the archive.
+        /// Exceptions related to validating the paths in the <paramname="destinationDirectoryName"/> or the files in the zip archive contained in <paramname="source"/> parameters are thrown before extraction. Otherwise, if an error occurs during extraction, the archive remains partially extracted.
+        /// Each extracted file has the same relative path to the directory specified by <paramname="destinationDirectoryName"/> as its source entry has to the root of the archive.
         /// If a file to be archived has an invalid last modified time, the first date and time representable in the Zip timestamp format (midnight on January 1, 1980) will be used.</remarks>
-        /// <exception cref="ArgumentException"><paramref name="destinationDirectoryName" />> is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="destinationDirectoryName" /> or <paramref name="source" /> is <see langword="null" />.</exception>
-        /// <exception cref="PathTooLongException">The specified path in <paramref name="destinationDirectoryName" /> exceeds the system-defined maximum length.</exception>
+        /// <exception cref="ArgumentException"><paramname="destinationDirectoryName" />> is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+        /// <exception cref="ArgumentNullException"><paramname="destinationDirectoryName" /> or <paramname="source" /> is <see langword="null" />.</exception>
+        /// <exception cref="PathTooLongException">The specified path in <paramname="destinationDirectoryName" /> exceeds the system-defined maximum length.</exception>
         /// <exception cref="DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
         /// <exception cref="IOException">The name of an entry in the archive is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.
         /// -or-
-        /// Extracting an archive entry would create a file that is outside the directory specified by <paramref name="destinationDirectoryName" />. (For example, this might happen if the entry name contains parent directory accessors.)
+        /// Extracting an archive entry would create a file that is outside the directory specified by <paramname="destinationDirectoryName" />. (For example, this might happen if the entry name contains parent directory accessors.)
         /// -or-
-        /// An archive entry to extract has the same name as an entry that has already been extracted or that exists in <paramref name="destinationDirectoryName" />.</exception>
+        /// An archive entry to extract has the same name as an entry that has already been extracted or that exists in <paramname="destinationDirectoryName" />.</exception>
         /// <exception cref="UnauthorizedAccessException">The caller does not have the required permission to access the archive or the destination directory.</exception>
-        /// <exception cref="NotSupportedException"><paramref name="destinationDirectoryName" /> contains an invalid format.</exception>
-        /// <exception cref="InvalidDataException">The archive contained in the <paramref name="source" /> stream is not a valid zip archive.
+        /// <exception cref="NotSupportedException"><paramname="destinationDirectoryName" /> contains an invalid format.</exception>
+        /// <exception cref="InvalidDataException">The archive contained in the <paramname="source" /> stream is not a valid zip archive.
         /// -or-
         /// An archive entry was not found or was corrupt.
         /// -or-
@@ -223,21 +223,21 @@ namespace Counting
         /// <param name="destinationDirectoryName">The path to the directory in which to place the extracted files, specified as a relative or absolute path. A relative path is interpreted as relative to the current working directory.</param>
         /// <param name="overwriteFiles"><see langword="true" /> to overwrite files; <see langword="false" /> otherwise.</param>
         /// <remarks> This method creates the specified directory and all subdirectories. The destination directory cannot already exist.
-        /// Exceptions related to validating the paths in the <paramref name="destinationDirectoryName"/> or the files in the zip archive contained in <paramref name="source"/> parameters are thrown before extraction. Otherwise, if an error occurs during extraction, the archive remains partially extracted.
-        /// Each extracted file has the same relative path to the directory specified by <paramref name="destinationDirectoryName"/> as its source entry has to the root of the archive.
+        /// Exceptions related to validating the paths in the <paramname="destinationDirectoryName"/> or the files in the zip archive contained in <paramname="source"/> parameters are thrown before extraction. Otherwise, if an error occurs during extraction, the archive remains partially extracted.
+        /// Each extracted file has the same relative path to the directory specified by <paramname="destinationDirectoryName"/> as its source entry has to the root of the archive.
         /// If a file to be archived has an invalid last modified time, the first date and time representable in the Zip timestamp format (midnight on January 1, 1980) will be used.</remarks>
-        /// <exception cref="ArgumentException"><paramref name="destinationDirectoryName" />> is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="destinationDirectoryName" /> or <paramref name="source" /> is <see langword="null" />.</exception>
-        /// <exception cref="PathTooLongException">The specified path in <paramref name="destinationDirectoryName" /> exceeds the system-defined maximum length.</exception>
+        /// <exception cref="ArgumentException"><paramname="destinationDirectoryName" />> is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.</exception>
+        /// <exception cref="ArgumentNullException"><paramname="destinationDirectoryName" /> or <paramname="source" /> is <see langword="null" />.</exception>
+        /// <exception cref="PathTooLongException">The specified path in <paramname="destinationDirectoryName" /> exceeds the system-defined maximum length.</exception>
         /// <exception cref="DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
         /// <exception cref="IOException">The name of an entry in the archive is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.
         /// -or-
-        /// Extracting an archive entry would create a file that is outside the directory specified by <paramref name="destinationDirectoryName" />. (For example, this might happen if the entry name contains parent directory accessors.)
+        /// Extracting an archive entry would create a file that is outside the directory specified by <paramname="destinationDirectoryName" />. (For example, this might happen if the entry name contains parent directory accessors.)
         /// -or-
-        /// <paramref name="overwriteFiles" /> is <see langword="false" /> and an archive entry to extract has the same name as an entry that has already been extracted or that exists in <paramref name="destinationDirectoryName" />.</exception>
+        /// <paramname="overwriteFiles" /> is <see langword="false" /> and an archive entry to extract has the same name as an entry that has already been extracted or that exists in <paramname="destinationDirectoryName" />.</exception>
         /// <exception cref="UnauthorizedAccessException">The caller does not have the required permission to access the archive or the destination directory.</exception>
-        /// <exception cref="NotSupportedException"><paramref name="destinationDirectoryName" /> contains an invalid format.</exception>
-        /// <exception cref="InvalidDataException">The archive contained in the <paramref name="source" /> stream is not a valid zip archive.
+        /// <exception cref="NotSupportedException"><paramname="destinationDirectoryName" /> contains an invalid format.</exception>
+        /// <exception cref="InvalidDataException">The archive contained in the <paramname="source" /> stream is not a valid zip archive.
         /// -or-
         /// An archive entry was not found or was corrupt.
         /// -or-
@@ -252,29 +252,29 @@ namespace Counting
         /// <param name="destinationDirectoryName">The path to the directory in which to place the extracted files, specified as a relative or absolute path. A relative path is interpreted as relative to the current working directory.</param>
         /// <param name="entryNameEncoding">The encoding to use when reading or writing entry names in this archive. Specify a value for this parameter only when an encoding is required for interoperability with zip archive tools and libraries that do not support UTF-8 encoding for entry names.</param>
         /// <remarks> This method creates the specified directory and all subdirectories. The destination directory cannot already exist.
-        /// Exceptions related to validating the paths in the <paramref name="destinationDirectoryName"/> or the files in the zip archive contained in <paramref name="source"/> parameters are thrown before extraction. Otherwise, if an error occurs during extraction, the archive remains partially extracted.
-        /// Each extracted file has the same relative path to the directory specified by <paramref name="destinationDirectoryName"/> as its source entry has to the root of the archive.
+        /// Exceptions related to validating the paths in the <paramname="destinationDirectoryName"/> or the files in the zip archive contained in <paramname="source"/> parameters are thrown before extraction. Otherwise, if an error occurs during extraction, the archive remains partially extracted.
+        /// Each extracted file has the same relative path to the directory specified by <paramname="destinationDirectoryName"/> as its source entry has to the root of the archive.
         /// If a file to be archived has an invalid last modified time, the first date and time representable in the Zip timestamp format (midnight on January 1, 1980) will be used.</remarks>
-        /// If <paramref name="entryNameEncoding"/> is set to a value other than <see langword="null"/>, entry names are decoded according to the following rules:
+        /// If <paramname="entryNameEncoding"/> is set to a value other than <see langword="null"/>, entry names are decoded according to the following rules:
         /// - For entry names where the language encoding flag (in the general-purpose bit flag of the local file header) is not set, the entry names are decoded by using the specified encoding.
         /// - For entries where the language encoding flag is set, the entry names are decoded by using UTF-8.
-        /// If <paramref name="entryNameEncoding"/> is set to <see langword="null"/>, entry names are decoded according to the following rules:
+        /// If <paramname="entryNameEncoding"/> is set to <see langword="null"/>, entry names are decoded according to the following rules:
         /// - For entries where the language encoding flag (in the general-purpose bit flag of the local file header) is not set, entry names are decoded by using the current system default code page.
         /// - For entries where the language encoding flag is set, the entry names are decoded by using UTF-8.
-        /// <exception cref="ArgumentException"><paramref name="destinationDirectoryName" />> is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.
+        /// <exception cref="ArgumentException"><paramname="destinationDirectoryName" />> is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.
         /// -or-
-        /// <paramref name="entryNameEncoding"/> is set to a Unicode encoding other than UTF-8.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="destinationDirectoryName" /> or <paramref name="source" /> is <see langword="null" />.</exception>
-        /// <exception cref="PathTooLongException">The specified path in <paramref name="destinationDirectoryName" /> exceeds the system-defined maximum length.</exception>
+        /// <paramname="entryNameEncoding"/> is set to a Unicode encoding other than UTF-8.</exception>
+        /// <exception cref="ArgumentNullException"><paramname="destinationDirectoryName" /> or <paramname="source" /> is <see langword="null" />.</exception>
+        /// <exception cref="PathTooLongException">The specified path in <paramname="destinationDirectoryName" /> exceeds the system-defined maximum length.</exception>
         /// <exception cref="DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
         /// <exception cref="IOException">The name of an entry in the archive is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.
         /// -or-
-        /// Extracting an archive entry would create a file that is outside the directory specified by <paramref name="destinationDirectoryName" />. (For example, this might happen if the entry name contains parent directory accessors.)
+        /// Extracting an archive entry would create a file that is outside the directory specified by <paramname="destinationDirectoryName" />. (For example, this might happen if the entry name contains parent directory accessors.)
         /// -or-
-        /// An archive entry to extract has the same name as an entry that has already been extracted or that exists in <paramref name="destinationDirectoryName" />.</exception>
+        /// An archive entry to extract has the same name as an entry that has already been extracted or that exists in <paramname="destinationDirectoryName" />.</exception>
         /// <exception cref="UnauthorizedAccessException">The caller does not have the required permission to access the archive or the destination directory.</exception>
-        /// <exception cref="NotSupportedException"><paramref name="destinationDirectoryName" /> contains an invalid format.</exception>
-        /// <exception cref="InvalidDataException">The archive contained in the <paramref name="source" /> stream is not a valid zip archive.
+        /// <exception cref="NotSupportedException"><paramname="destinationDirectoryName" /> contains an invalid format.</exception>
+        /// <exception cref="InvalidDataException">The archive contained in the <paramname="source" /> stream is not a valid zip archive.
         /// -or-
         /// An archive entry was not found or was corrupt.
         /// -or-
@@ -290,29 +290,29 @@ namespace Counting
         /// <param name="entryNameEncoding">The encoding to use when reading or writing entry names in this archive. Specify a value for this parameter only when an encoding is required for interoperability with zip archive tools and libraries that do not support UTF-8 encoding for entry names.</param>
         /// <param name="overwriteFiles"><see langword="true" /> to overwrite files; <see langword="false" /> otherwise.</param>
         /// <remarks> This method creates the specified directory and all subdirectories. The destination directory cannot already exist.
-        /// Exceptions related to validating the paths in the <paramref name="destinationDirectoryName"/> or the files in the zip archive contained in <paramref name="source"/> parameters are thrown before extraction. Otherwise, if an error occurs during extraction, the archive remains partially extracted.
-        /// Each extracted file has the same relative path to the directory specified by <paramref name="destinationDirectoryName"/> as its source entry has to the root of the archive.
+        /// Exceptions related to validating the paths in the <paramname="destinationDirectoryName"/> or the files in the zip archive contained in <paramname="source"/> parameters are thrown before extraction. Otherwise, if an error occurs during extraction, the archive remains partially extracted.
+        /// Each extracted file has the same relative path to the directory specified by <paramname="destinationDirectoryName"/> as its source entry has to the root of the archive.
         /// If a file to be archived has an invalid last modified time, the first date and time representable in the Zip timestamp format (midnight on January 1, 1980) will be used.</remarks>
-        /// If <paramref name="entryNameEncoding"/> is set to a value other than <see langword="null"/>, entry names are decoded according to the following rules:
+        /// If <paramname="entryNameEncoding"/> is set to a value other than <see langword="null"/>, entry names are decoded according to the following rules:
         /// - For entry names where the language encoding flag (in the general-purpose bit flag of the local file header) is not set, the entry names are decoded by using the specified encoding.
         /// - For entries where the language encoding flag is set, the entry names are decoded by using UTF-8.
-        /// If <paramref name="entryNameEncoding"/> is set to <see langword="null"/>, entry names are decoded according to the following rules:
+        /// If <paramname="entryNameEncoding"/> is set to <see langword="null"/>, entry names are decoded according to the following rules:
         /// - For entries where the language encoding flag (in the general-purpose bit flag of the local file header) is not set, entry names are decoded by using the current system default code page.
         /// - For entries where the language encoding flag is set, the entry names are decoded by using UTF-8.
-        /// <exception cref="ArgumentException"><paramref name="destinationDirectoryName" />> is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.
+        /// <exception cref="ArgumentException"><paramname="destinationDirectoryName" />> is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.
         /// -or-
-        /// <paramref name="entryNameEncoding"/> is set to a Unicode encoding other than UTF-8.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="destinationDirectoryName" /> or <paramref name="source" /> is <see langword="null" />.</exception>
-        /// <exception cref="PathTooLongException">The specified path in <paramref name="destinationDirectoryName" /> exceeds the system-defined maximum length.</exception>
+        /// <paramname="entryNameEncoding"/> is set to a Unicode encoding other than UTF-8.</exception>
+        /// <exception cref="ArgumentNullException"><paramname="destinationDirectoryName" /> or <paramname="source" /> is <see langword="null" />.</exception>
+        /// <exception cref="PathTooLongException">The specified path in <paramname="destinationDirectoryName" /> exceeds the system-defined maximum length.</exception>
         /// <exception cref="DirectoryNotFoundException">The specified path is invalid (for example, it is on an unmapped drive).</exception>
         /// <exception cref="IOException">The name of an entry in the archive is <see cref="string.Empty" />, contains only white space, or contains at least one invalid character.
         /// -or-
-        /// Extracting an archive entry would create a file that is outside the directory specified by <paramref name="destinationDirectoryName" />. (For example, this might happen if the entry name contains parent directory accessors.)
+        /// Extracting an archive entry would create a file that is outside the directory specified by <paramname="destinationDirectoryName" />. (For example, this might happen if the entry name contains parent directory accessors.)
         /// -or-
-        /// <paramref name="overwriteFiles" /> is <see langword="false" /> and an archive entry to extract has the same name as an entry that has already been extracted or that exists in <paramref name="destinationDirectoryName" />.</exception>
+        /// <paramname="overwriteFiles" /> is <see langword="false" /> and an archive entry to extract has the same name as an entry that has already been extracted or that exists in <paramname="destinationDirectoryName" />.</exception>
         /// <exception cref="UnauthorizedAccessException">The caller does not have the required permission to access the archive or the destination directory.</exception>
-        /// <exception cref="NotSupportedException"><paramref name="destinationDirectoryName" /> contains an invalid format.</exception>
-        /// <exception cref="InvalidDataException">The archive contained in the <paramref name="source" /> stream is not a valid zip archive.
+        /// <exception cref="NotSupportedException"><paramname="destinationDirectoryName" /> contains an invalid format.</exception>
+        /// <exception cref="InvalidDataException">The archive contained in the <paramname="source" /> stream is not a valid zip archive.
         /// -or-
         /// An archive entry was not found or was corrupt.
         /// -or-

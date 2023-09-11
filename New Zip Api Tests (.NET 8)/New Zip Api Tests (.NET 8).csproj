@@ -10,7 +10,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Crc32.NET" Version="1.2.0" />
 		<PackageReference Include="Humanizer.Core" Version="2.14.1" />
+		<PackageReference Include="System.IO.Hashing" Version="7.0.0" />
 	</ItemGroup>
 
 </Project>

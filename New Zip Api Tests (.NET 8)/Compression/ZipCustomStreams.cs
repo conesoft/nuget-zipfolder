@@ -45,8 +45,6 @@ namespace SystemIOCompression
             }
         }
 
-        public void AdvancePosition(long amount) => _baseStream.AdvancePosition(amount);
-
         public override long Position
         {
             get
@@ -403,8 +401,8 @@ namespace SystemIOCompression
 
     public sealed class CheckSumAndSizeWriteStream : Stream
     {
-        private readonly PositionWrapperStream _baseStream;
-        private readonly PositionWrapperStream _baseBaseStream;
+        private readonly Stream _baseStream;
+        private readonly Stream _baseBaseStream;
         private long _position;
         private uint _checksum;
 
@@ -429,7 +427,7 @@ namespace SystemIOCompression
         // baseBaseStream it's a backingStream, passed here so as to avoid closure allocation,
         // zipArchiveEntry passed here so as to avoid closure allocation,
         // onClose handler passed here so as to avoid closure allocation
-        public CheckSumAndSizeWriteStream(PositionWrapperStream baseStream, PositionWrapperStream baseBaseStream, bool leaveOpenOnClose,
+        public CheckSumAndSizeWriteStream(Stream baseStream, Stream baseBaseStream, bool leaveOpenOnClose,
             ZipArchiveEntry entry, EventHandler? onClose,
             Action<long, long, uint, Stream, ZipArchiveEntry, EventHandler?> saveCrcAndSizes)
         {
@@ -444,12 +442,6 @@ namespace SystemIOCompression
             _zipArchiveEntry = entry;
             _onClose = onClose;
             _saveCrcAndSizes = saveCrcAndSizes;
-        }
-
-        public void AdvancePosition(long amount)
-        {
-            _position += amount;
-            _baseStream.AdvancePosition(amount);
         }
 
         public override long Length
@@ -528,58 +520,58 @@ namespace SystemIOCompression
             _position += count;
         }
 
-        public override void Write(ReadOnlySpan<byte> source)
-        {
-            // if we're not actually writing anything, we don't want to trigger as if we did write something
-            ThrowIfDisposed();
-            Debug.Assert(CanWrite);
+        public override void Write(ReadOnlySpan<byte> source) => throw new NotImplementedException();
+        //{
+        //    // if we're not actually writing anything, we don't want to trigger as if we did write something
+        //    ThrowIfDisposed();
+        //    Debug.Assert(CanWrite);
 
-            if (source.Length == 0)
-                return;
+        //    if (source.Length == 0)
+        //        return;
 
-            if (!_everWritten)
-            {
-                _initialPosition = _baseBaseStream.Position;
-                _everWritten = true;
-            }
+        //    if (!_everWritten)
+        //    {
+        //        _initialPosition = _baseBaseStream.Position;
+        //        _everWritten = true;
+        //    }
 
-            _checksum = Crc32Helper.UpdateCrc32(_checksum, source);
-            _baseStream.Write(source);
-            _position += source.Length;
-        }
+        //    _checksum = Crc32Helper.UpdateCrc32(_checksum, source);
+        //    _baseStream.Write(source);
+        //    _position += source.Length;
+        //}
 
-        public override void WriteByte(byte value) =>
-            Write(new ReadOnlySpan<byte>(in value));
+        public override void WriteByte(byte value) => throw new NotImplementedException();
+        //Write(new ReadOnlySpan<byte>(in value));
 
-        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        {
-            ValidateBufferArguments(buffer, offset, count);
-            return WriteAsync(new ReadOnlyMemory<byte>(buffer, offset, count), cancellationToken).AsTask();
-        }
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) => throw new NotImplementedException();
+        //{
+        //    ValidateBufferArguments(buffer, offset, count);
+        //    return WriteAsync(new ReadOnlyMemory<byte>(buffer, offset, count), cancellationToken).AsTask();
+        //}
 
-        public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
-        {
-            ThrowIfDisposed();
-            Debug.Assert(CanWrite);
+        public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default) => throw new NotImplementedException();
+        //{
+        //    ThrowIfDisposed();
+        //    Debug.Assert(CanWrite);
 
-            return !buffer.IsEmpty ?
-                Core(buffer, cancellationToken) :
-                default;
+        //    return !buffer.IsEmpty ?
+        //        Core(buffer, cancellationToken) :
+        //        default;
 
-            async ValueTask Core(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
-            {
-                if (!_everWritten)
-                {
-                    _initialPosition = _baseBaseStream.Position;
-                    _everWritten = true;
-                }
+        //    async ValueTask Core(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+        //    {
+        //        if (!_everWritten)
+        //        {
+        //            _initialPosition = _baseBaseStream.Position;
+        //            _everWritten = true;
+        //        }
 
-                _checksum = Crc32Helper.UpdateCrc32(_checksum, buffer.Span);
+        //        _checksum = Crc32Helper.UpdateCrc32(_checksum, buffer.Span);
 
-                await _baseStream.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
-                _position += buffer.Length;
-            }
-        }
+        //        await _baseStream.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
+        //        _position += buffer.Length;
+        //    }
+        //}
 
         public override void Flush()
         {

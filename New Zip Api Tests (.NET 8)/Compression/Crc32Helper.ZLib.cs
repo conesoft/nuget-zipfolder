@@ -14,15 +14,7 @@ namespace SystemIOCompression
             Debug.Assert((buffer != null) && (offset >= 0) && (length >= 0) && (offset <= buffer.Length - length));
             fixed (byte* bufferPtr = &buffer[offset])
             {
-                return 0;// Interop.ZLib.crc32(crc32, bufferPtr, length);
-            }
-        }
-
-        public static unsafe uint UpdateCrc32(uint crc32, ReadOnlySpan<byte> buffer)
-        {
-            fixed (byte* bufferPtr = &MemoryMarshal.GetReference(buffer))
-            {
-                return 0; // Interop.ZLib.crc32(crc32, bufferPtr, buffer.Length);
+                return Force.Crc32.Crc32Algorithm.Append(crc32, buffer, offset, length);
             }
         }
     }

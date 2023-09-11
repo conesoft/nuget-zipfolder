@@ -371,10 +371,10 @@ namespace SystemIOCompression
             }
         }
 
-        private CheckSumAndSizeWriteStream GetDataCompressor(PositionWrapperStream backingStream, bool leaveBackingStreamOpen, EventHandler? onClose)
+        private CheckSumAndSizeWriteStream GetDataCompressor(Stream backingStream, bool leaveBackingStreamOpen, EventHandler? onClose)
         {
             bool isIntermediateStream = false;
-            PositionWrapperStream compressorStream = backingStream;
+            Stream compressorStream = backingStream;
 
             bool leaveCompressorStreamOpenOnClose = leaveBackingStreamOpen && !isIntermediateStream;
             var checkSumStream = new CheckSumAndSizeWriteStream(
@@ -771,11 +771,6 @@ namespace SystemIOCompression
                 _entry = entry;
                 _usedZip64inLH = false;
                 _canWrite = true;
-            }
-            public void AdvancePosition(long amount)
-            {
-                _position += amount;
-                _crcSizeStream.AdvancePosition(amount);
             }
 
             public override long Length

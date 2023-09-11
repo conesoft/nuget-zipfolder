@@ -12,7 +12,7 @@ namespace SystemIOCompression
                 static (ref FileSystemEntry entry) => (entry.ToFullPath(), entry.IsDirectory ? CreateEntryType.Directory : CreateEntryType.File),
                 new EnumerationOptions { RecurseSubdirectories = true, AttributesToSkip = 0, IgnoreInaccessible = false });
 
-        public static void CreateFromDirectory(string sourceDirectoryName, PositionWrapperStream destination)
+        public static void CreateFromDirectory(string sourceDirectoryName, Stream destination)
         {
             ArgumentNullException.ThrowIfNull(destination);
             if (!destination.CanWrite)
