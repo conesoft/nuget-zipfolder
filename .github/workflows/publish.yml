@@ -1,0 +1,11 @@
+on: push
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@main
+      - uses: actions/setup-dotnet@main
+      - uses: conesoft/publish-nuget@main
+        with:
+          NUGET_KEY: ${{secrets.NUGET_KEY}}

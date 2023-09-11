@@ -1,4 +1,6 @@
-﻿class FileAppendOnlyWrapperStream : Stream
+﻿namespace Conesoft.ZipFolder;
+
+internal class FileAppendOnlyWrapperStream : Stream
 {
     private readonly Stream stream;
 
@@ -28,7 +30,7 @@
 
     protected override void Dispose(bool disposing)
     {
-        if(disposing)
+        if (disposing)
         {
             stream.Dispose();
         }
@@ -39,6 +41,6 @@
     public override long Seek(long offset, SeekOrigin origin) => throw new NotImplementedException();
     public override void SetLength(long value) => throw new NotImplementedException();
     public override bool CanRead => throw new NotImplementedException();
-    public override int Read(byte[] buffer, int offset, int count) =>  throw new NotImplementedException();
+    public override int Read(byte[] buffer, int offset, int count) => throw new NotImplementedException();
     public override long Length => throw new NotImplementedException();
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Counting
 {
-    public static partial class ZipFile
+    internal static partial class ZipFile
     {
         /// <summary>
         /// Extracts all of the files in the specified archive to a directory on the file system.

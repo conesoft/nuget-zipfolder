@@ -4,13 +4,14 @@
 
 // Zip Spec here: http://www.pkware.com/documents/casestudies/APPNOTE.TXT
 
+using Conesoft.ZipFolder;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 
 namespace Counting
 {
-    public class ZipArchive : IDisposable
+    internal class ZipArchive : IDisposable
     {
         private readonly PositionWrapperStream _archiveStream;
         private ZipArchiveEntry? _archiveStreamOwner;

@@ -1,6 +1,7 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using Conesoft.ZipFolder;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -401,7 +402,7 @@ namespace Counting
         }
     }
 
-    public sealed class CheckSumAndSizeWriteStream : Stream
+    internal sealed class CheckSumAndSizeWriteStream : Stream
     {
         private readonly PositionWrapperStream _baseStream;
         private readonly PositionWrapperStream _baseBaseStream;

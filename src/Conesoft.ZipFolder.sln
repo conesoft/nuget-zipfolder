@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34004.107
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "New Zip Api Tests (.NET 8)", "New Zip Api Tests (.NET 8)\New Zip Api Tests (.NET 8).csproj", "{AA6D56FB-D386-4BBD-8C45-EE6ED58B2157}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Conesoft.ZipFolder", "Conesoft.ZipFolder.csproj", "{F23249CB-2F44-4A88-9EF7-E9F3ACCCD795}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AA6D56FB-D386-4BBD-8C45-EE6ED58B2157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA6D56FB-D386-4BBD-8C45-EE6ED58B2157}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA6D56FB-D386-4BBD-8C45-EE6ED58B2157}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA6D56FB-D386-4BBD-8C45-EE6ED58B2157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F23249CB-2F44-4A88-9EF7-E9F3ACCCD795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F23249CB-2F44-4A88-9EF7-E9F3ACCCD795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F23249CB-2F44-4A88-9EF7-E9F3ACCCD795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F23249CB-2F44-4A88-9EF7-E9F3ACCCD795}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4D738416-40B5-4D99-8FC5-98C59281220E}
+		SolutionGuid = {558C3742-2619-4017-8806-C782E925A612}
 	EndGlobalSection
 EndGlobal
