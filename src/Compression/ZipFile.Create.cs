@@ -22,7 +22,7 @@ namespace SystemIOCompression
 
             sourceDirectoryName = Path.GetFullPath(sourceDirectoryName);
 
-            using ZipArchive archive = new(destination, true, null);
+            using ZipArchive archive = new(destination, false, null);
 
             DirectoryInfo di = new(sourceDirectoryName);
 
