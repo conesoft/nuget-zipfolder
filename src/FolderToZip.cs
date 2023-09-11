@@ -1,10 +1,10 @@
 ﻿namespace Conesoft.ZipFolder;
 
-internal class ZippedResult
+public class FolderToZip
 {
     readonly string source;
 
-    public ZippedResult(string source)
+    public FolderToZip(string source)
     {
         this.source = source;
     }
