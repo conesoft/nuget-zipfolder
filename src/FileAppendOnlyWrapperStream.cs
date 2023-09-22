@@ -3,10 +3,12 @@
 internal class FileAppendOnlyWrapperStream : Stream
 {
     private readonly Stream stream;
+    private long position;
 
     public FileAppendOnlyWrapperStream(Stream stream)
     {
         this.stream = stream;
+        this.position = 0;
     }
 
     public override bool CanSeek { get { return false; } }
@@ -14,12 +16,13 @@ internal class FileAppendOnlyWrapperStream : Stream
 
     public override long Position
     {
-        get { return stream.Position; }
+        get { return position; }
         set { throw new NotSupportedException(); }
     }
 
     public override void Write(byte[] buffer, int offset, int count)
     {
+        position += count;
         stream.Write(buffer, offset, count);
     }
 

@@ -24,7 +24,7 @@ namespace SystemIOCompression
         private bool _isDisposed;
         //private uint _numberOfThisDisk; //only valid after ReadCentralDirectory
         //private long _expectedNumberOfEntries;
-        private readonly Stream? _backingStream;
+        //private readonly Stream? _backingStream;
         private byte[] _archiveComment;
         private Encoding? _entryNameAndCommentEncoding;
 
@@ -33,11 +33,11 @@ namespace SystemIOCompression
             ArgumentNullException.ThrowIfNull(stream);
 
             EntryNameAndCommentEncoding = entryNameEncoding;
-            Stream? extraTempStream = null;
+            ////Stream? extraTempStream = null;
 
             try
             {
-                _backingStream = null;
+                //_backingStream = null;
 
                 if (!stream.CanWrite)
                     throw new ArgumentException();
@@ -59,7 +59,7 @@ namespace SystemIOCompression
             }
             catch
             {
-                extraTempStream?.Dispose();
+                //extraTempStream?.Dispose();
 
                 throw;
             }
@@ -197,16 +197,10 @@ namespace SystemIOCompression
             if (!_leaveOpen)
             {
                 _archiveStream.Dispose();
-                _backingStream?.Dispose();
                 _archiveReader?.Dispose();
             }
             else
             {
-                // if _backingStream isn't null, that means we assigned the original stream they passed
-                // us to _backingStream (which they requested we leave open), and _archiveStream was
-                // the temporary copy that we needed
-                if (_backingStream != null)
-                    _archiveStream.Dispose();
             }
         }
 
