@@ -8,14 +8,14 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>davepermen</Authors>
 		<Company>Conesoft</Company>
 		<PackageIcon>Conesoft.forNuget.x256.png</PackageIcon>
 		<PackageProjectUrl>https://github.com/conesoft/nuget-zipfolder</PackageProjectUrl>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Description>little library to stream a folder into a zipfile. it allows very fast calculation of the zipfile length in advance.</Description>
+		<Description>little library to stream files and folders into a zipfile. it allows very fast calculation of the zipfile length in advance.</Description>
 		<PackageTags>library dotnet-core</PackageTags>
 	</PropertyGroup>
 
