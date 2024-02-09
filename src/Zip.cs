@@ -7,7 +7,6 @@ static public class Zip
 {
     const ushort bitflags = 0b0000_1000_0000_1000; // (bit 3 for Data Descriptor at End, bit 11 for UTF-8)
 
-    static public long CalculateSize(params string[] sources) => CalculateSize(sources.Select(s => new Source(s)));
     static public long CalculateSize(params Source[] sources) => CalculateSize(sources);
     static public long CalculateSize(IEnumerable<string> sources) => CalculateSize(sources.Select(s => new Source(s)));
     static public long CalculateSize(IEnumerable<Source> sources)
@@ -34,7 +33,6 @@ static public class Zip
     }
 
 
-    static public void ZipSources(this Stream zip, params string[] sources) => zip.ZipSources(sources.Select(s => new Source(s)));
     static public void ZipSources(this Stream zip, params Source[] sources) => zip.ZipSources(sources);
     static public void ZipSources(this Stream zip, IEnumerable<string> sources) => zip.ZipSources(sources.Select(s => new Source(s)));
     static public void ZipSources(this Stream zip, IEnumerable<Source> sources)
