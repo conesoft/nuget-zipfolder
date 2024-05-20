@@ -1,13 +1,14 @@
+using System.IO.Hashing;
+
 /// https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
 /// https://rzymek.github.io/post/excel-zip64/
-
 namespace Conesoft.ZipFolder;
 
 static public class Zip
 {
     const ushort bitflags = 0b0000_1000_0000_1000; // (bit 3 for Data Descriptor at End, bit 11 for UTF-8)
 
-    static public long CalculateSize(params Source[] sources) => CalculateSize(sources);
+    static public long CalculateSize(params Source[] sources) => CalculateSize((IEnumerable<Source>)sources);
     static public long CalculateSize(IEnumerable<string> sources) => CalculateSize(sources.Select(s => new Source(s)));
     static public long CalculateSize(IEnumerable<Source> sources)
     {
@@ -33,7 +34,7 @@ static public class Zip
     }
 
 
-    static public void ZipSources(this Stream zip, params Source[] sources) => zip.ZipSources(sources);
+    static public void ZipSources(this Stream zip, params Source[] sources) => zip.ZipSources((IEnumerable<Source>)sources);
     static public void ZipSources(this Stream zip, IEnumerable<string> sources) => zip.ZipSources(sources.Select(s => new Source(s)));
     static public void ZipSources(this Stream zip, IEnumerable<Source> sources)
     {
@@ -142,20 +143,19 @@ static public class Zip
         ;
     }
 
-    static readonly byte[] buff = new byte[1024 * 1024 * 16];
+    static readonly byte[] buff = new byte[1024 * 1024 * 4];
 
     static Stream WriteStreamAndComputeCrc(this Stream output, Stream input, Action<uint> calculatedCrc)
     {
-        int len = input.Read(buff, 0, buff.Length);
-        uint crc = Force.Crc32.Crc32Algorithm.Compute(buff, 0, len);
-        output.Write(buff, 0, len);
-
-        while ((len = input.Read(buff, 0, buff.Length)) > 0)
+        var crc = new Crc32();
+        int length;
+        while ((length = input.Read(buff)) > 0)
         {
-            crc = Force.Crc32.Crc32Algorithm.Append(crc, buff, 0, len);
-            output.Write(buff, 0, len);
+            var bytes = new ReadOnlySpan<byte>(buff, 0, length);
+            crc.Append(bytes);
+            output.Write(bytes);
         }
-        calculatedCrc(crc);
+        calculatedCrc(crc.GetCurrentHashAsUInt32());
         return output;
     }
 }
