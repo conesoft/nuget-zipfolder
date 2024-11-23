@@ -6,6 +6,8 @@ jobs:
       - uses: actions/checkout@main
       - uses: actions/setup-node@main
       - uses: actions/setup-dotnet@main
+        with:
+          dotnet-version: 9.0.x
       - uses: conesoft/publish-nuget@main
         with:
           NUGET_KEY: ${{secrets.NUGET_KEY}}
