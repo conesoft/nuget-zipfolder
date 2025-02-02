@@ -5,19 +5,19 @@ namespace Conesoft.ZipFolder;
 [EditorBrowsable(EditorBrowsableState.Never)]
 static public class ByteHelpers
 {
-    static public Stream WriteBytes(this Stream stream, params byte[] bytes)
+    static public T WriteBytes<T>(this T stream, params byte[] bytes) where T : Stream
     {
         stream.Write(bytes);
         return stream;
     }
 
-    static public Stream Write_8(this Stream stream, params byte[] bytes)
+    static public T Write_8<T>(this T stream, params byte[] bytes) where T : Stream
     {
         stream.Write(bytes);
         return stream;
     }
 
-    static public Stream Write16(this Stream stream, params UInt16[] values)
+    static public T Write16<T>(this T stream, params UInt16[] values) where T : Stream
     {
         foreach (var value in values)
         {
@@ -27,7 +27,7 @@ static public class ByteHelpers
         return stream;
     }
 
-    static public Stream Write32(this Stream stream, params UInt32[] values)
+    static public T Write32<T>(this T stream, params UInt32[] values) where T : Stream
     {
         foreach (var value in values)
         {
@@ -40,7 +40,7 @@ static public class ByteHelpers
     }
 
 
-    static public Stream Write64(this Stream stream, params UInt64[] values)
+    static public T Write64<T>(this T stream, params UInt64[] values) where T : Stream
     {
         foreach (var value in values)
         {

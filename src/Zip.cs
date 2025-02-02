@@ -33,10 +33,9 @@ static public class Zip
             + 98;
     }
 
-
-    static public void ZipSources(this Stream zip, params Source[] sources) => zip.ZipSources((IEnumerable<Source>)sources);
-    static public void ZipSources(this Stream zip, IEnumerable<string> sources) => zip.ZipSources(sources.Select(s => new Source(s)));
-    static public void ZipSources(this Stream zip, IEnumerable<Source> sources)
+    static public async Task ZipSources(this Stream zip, params Source[] sources) => await zip.ZipSources((IEnumerable<Source>)sources);
+    static public async Task ZipSources(this Stream zip, IEnumerable<string> sources) => await zip.ZipSources(sources.Select(s => new Source(s)));
+    static public async Task ZipSources(this Stream zip, IEnumerable<Source> sources)
     {
         var files = sources.UnpackDirectories().Select(f => new FileInZip(
             Name: Path.Combine(f.To, Path.GetFileName(f.From)),
@@ -50,7 +49,7 @@ static public class Zip
         /// [local file entries]
         foreach (var file in files)
         {
-            position += zip.WriteFileEntry(file, position);
+            position += await zip.WriteFileEntry(file, position);
             file.Stream.Close();
         }
 
@@ -60,41 +59,43 @@ static public class Zip
         ulong length = 0;
         foreach (var file in files)
         {
-            length += zip.WriteCentralDirectoryEntry(file);
+            length += await zip.WriteCentralDirectoryEntry(file);
         }
 
-        zip.WriteEndOfCentralDirectory(count: (ulong)files.Length, offset: start, length: length);
+        await zip.WriteEndOfCentralDirectory(count: (ulong)files.Length, offset: start, length: length);
     }
 
-    static ulong WriteFileEntry(this Stream zip, FileInZip file, ulong offset)
+    static async Task<ulong> WriteFileEntry(this Stream zip, FileInZip file, ulong offset)
     {
         file.Offset = offset;
 
         // 4 + 2*5 + 4*3 + 2*2 + ... + ... + 4 + 8*2 = 50 + filename.Length + file.Length
 
-        zip
-            .Write_8(0x50, 0x4b, 0x03, 0x04)                                  /// header [local file header]
-            .Write16(45, bitflags, 0, file.TimeBits, file.DateBits)           // version (45 = ZIP64) | general purpose bitflag | compression method (0 = store) | time | date
-            .Write32(0, 0, 0)                                                 // CRC bits | compressed size | uncompressed size => 0 each for data descriptor
-            .Write16((ushort)file.NameAsBytes.Length, 0)                      // filename length | extrafield size
-            .Write_8(file.NameAsBytes)                                        // filename
+        await zip.WriteBytes(s => s
+            .Write_8(0x50, 0x4b, 0x03, 0x04)                            /// header [local file header]
+            .Write16(45, bitflags, 0, file.TimeBits, file.DateBits)     // version (45 = ZIP64) | general purpose bitflag | compression method (0 = store) | time | date
+            .Write32(0, 0, 0)                                           // CRC bits | compressed size | uncompressed size => 0 each for data descriptor
+            .Write16((ushort)file.NameAsBytes.Length, 0)                // filename length | extrafield size
+            .Write_8(file.NameAsBytes)                                  // filename
+        );
 
-            .WriteStreamAndComputeCrc(file.Stream, crc => file.CrcBits = crc) /// write the actual data and calculate crc
+        file.CrcBits = await zip.WriteStreamAndComputeCrc(file.Stream); /// write the actual data and calculate crc
 
-            .Write32(file.CrcBits)                                            // CRC bits
-            .Write64((ulong)file.Size, (ulong)file.Size)                      // compressed size: ZIP64 extra | uncompressed size: ZIP64 extra
-        ;
+        await zip.WriteBytes(s => s
+            .Write32(file.CrcBits)                                      // CRC bits
+            .Write64((ulong)file.Size, (ulong)file.Size)                // compressed size: ZIP64 extra | uncompressed size: ZIP64 extra
+        );
 
         return (ulong)(50 + file.NameAsBytes.Length + file.Size);
     }
 
-    static ulong WriteCentralDirectoryEntry(this Stream zip, FileInZip file)
+    static async Task<ulong> WriteCentralDirectoryEntry(this Stream zip, FileInZip file)
     {
         // 4 + 2*6 + 4*3 + 2*5 + 4*2 + ... + 2 + 2 + 8*2 = 74 + filename.Length
 
         var zip64offset = file.Offset >= 0xFFFFFFFF;
 
-        zip
+        await zip.WriteBytes(s => s
             .Write_8(0x50, 0x4b, 0x01, 0x02)                              /// header [central directory header]
             .Write16(45, 45, bitflags, 0, file.TimeBits, file.DateBits)   // version (ZIP64) | min version to extract (ZIP64) | general purpose bitflag (bit 3 for Data Descriptor at End, bit 11 for UTF-8) | compression method (0 = store) | time | date
             .Write32(file.CrcBits, 0xFFFFFFFF, 0xFFFFFFFF)                // CRC bits | compressed size | uncompressed size => FFFFFFFF for ZIP64
@@ -106,24 +107,26 @@ static public class Zip
             .Write_8(0x01, 0x00)                                          /// extrafield header
             .Write16(zip64offset ? (ushort)24 : (ushort)16)               // size of extrafield (below)
             .Write64((ulong)file.Size, (ulong)file.Size)                  // compressed size: ZIP64 extra | uncompressed size: ZIP64 extra
-        ;
+        );
 
         if (zip64offset)
         {
-            zip.Write64(file.Offset);
+            await zip.WriteBytes(s => s
+                .Write64(file.Offset)
+            );
         }
 
-        return (ulong)(66 + file.NameAsBytes.Length + (file.Offset >= 0xFFFFFFFF ? 8 : 0));
+        return (ulong)(66 + file.NameAsBytes.Length + (zip64offset ? 8 : 0));
     }
 
-    static Stream WriteEndOfCentralDirectory(this Stream zip, ulong count, ulong offset, ulong length)
+    static async Task WriteEndOfCentralDirectory(this Stream zip, ulong count, ulong offset, ulong length)
     {
         //   4 + 8 + 2*2 + 4*2 + 8*4
         // + 4 + 4 + 8 + 4
         // + 4 + 2*4 + 4 + 4 + 2
         // = 98
 
-        return zip
+        await zip.WriteBytes(s => s
             .Write_8(0x50, 0x4b, 0x06, 0x06)       /// header [zip64 end of central directory record]
             .Write64(44)                           // size of remaining record is 56 bytes
             .Write16(45, 45)                       // version (ZIP64) | min version to extract (ZIP64)
@@ -140,22 +143,21 @@ static public class Zip
             .Write32(0xFFFFFFFF)                   // central directory sizes
             .Write32(0xFFFFFFFF)                   // central directory offset
             .Write16(0)
-        ;
+        );
     }
 
-    static readonly byte[] buff = new byte[1024 * 1024 * 4];
 
-    static Stream WriteStreamAndComputeCrc(this Stream output, Stream input, Action<uint> calculatedCrc)
+    static async Task<uint> WriteStreamAndComputeCrc(this Stream output, Stream input)
     {
+        byte[] buff = new byte[1024 * 1024 * 4];
         var crc = new Crc32();
-        int length;
-        while ((length = input.Read(buff)) > 0)
+
+        while ((await input.ReadAsync(buff)) is var length && length > 0)
         {
-            var bytes = new ReadOnlySpan<byte>(buff, 0, length);
-            crc.Append(bytes);
-            output.Write(bytes);
+            crc.Append(buff[0..length].AsSpan());
+            await output.WriteAsync(buff[0..length].AsMemory());
         }
-        calculatedCrc(crc.GetCurrentHashAsUInt32());
-        return output;
+
+        return crc.GetCurrentHashAsUInt32();
     }
 }
